@@ -7,9 +7,10 @@ import java.util.concurrent.*;
 import java.util.function.Function;
 
 /**
- * @Description Use Thread pool features to split tasks and run fast.
- * @Author liwenlong
- * @Date 2020-05-31
+ * Use Thread pool features to split tasks and run fast.
+ * @author liwenlong
+ * @date 2020-05-31
+ * @since JDK1.8
  */
 public class FastFoot {
     /**
@@ -30,14 +31,14 @@ public class FastFoot {
      *
      * @param taskList task list
      * @param function function for run every task
-     * @param foots create thread number when run the tasks
+     * @param feet create thread number when run the tasks
      * @param <T> task class type
      * @param <R> result class type
      * @return task and result map
      */
-    public static <T, R> Map<T, R> runTasks(List<T> taskList, Function<T, R> function, int foots) {
+    public static <T, R> Map<T, R> runTasks(List<T> taskList, Function<T, R> function, int feet) {
         Map<T, R> map = new HashMap<>(20);
-        ExecutorService executorService = Executors.newFixedThreadPool(foots);
+        ExecutorService executorService = Executors.newFixedThreadPool(feet);
         Map<T, Future<R>> futureMap = new HashMap<>();
         for (T t : taskList) {
             Future<R> future = executorService.submit(new RunTask<>(t, function));
