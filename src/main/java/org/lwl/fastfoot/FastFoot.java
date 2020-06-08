@@ -7,7 +7,9 @@ import java.util.concurrent.*;
 import java.util.function.Function;
 
 /**
- * Use Thread pool features to split tasks and run fast.
+ * Use the thread pool and java8 function interface features
+ * to split tasks and run fast.
+ *
  * @author liwenlong
  * @date 2020-05-31
  * @since JDK1.8
@@ -18,11 +20,11 @@ public class FastFoot {
      *
      * @param taskList task list
      * @param function function for run every task
-     * @param <T> task class type
-     * @param <R> result class type
+     * @param <T>      task class type
+     * @param <R>      result class type
      * @return task and result map
      */
-    public static <T, R> Map<T, R> runTasks(List<T> taskList, Function<T, R> function){
+    public static <T, R> Map<T, R> runTasks(List<T> taskList, Function<T, R> function) {
         return runTasks(taskList, function, 20);
     }
 
@@ -31,14 +33,24 @@ public class FastFoot {
      *
      * @param taskList task list
      * @param function function for run every task
-     * @param feet create thread number when run the tasks
-     * @param <T> task class type
-     * @param <R> result class type
+     * @param feet     setup thread pool number when running the tasks
+     * @param <T>      task class type
+     * @param <R>      result class type
      * @return task and result map
      */
     public static <T, R> Map<T, R> runTasks(List<T> taskList, Function<T, R> function, int feet) {
+        return runTasks(taskList, function, Executors.newFixedThreadPool(feet));
+    }
+    /**
+     * @param taskList        task list
+     * @param function        function for run every task
+     * @param executorService thread pool
+     * @param <T>             task class type
+     * @param <R>             result class type
+     * @return task and result map
+     */
+    public static <T, R> Map<T, R> runTasks(List<T> taskList, Function<T, R> function, ExecutorService executorService) {
         Map<T, R> map = new HashMap<>(20);
-        ExecutorService executorService = Executors.newFixedThreadPool(feet);
         Map<T, Future<R>> futureMap = new HashMap<>();
         for (T t : taskList) {
             Future<R> future = executorService.submit(new RunTask<>(t, function));
@@ -48,7 +60,7 @@ public class FastFoot {
         try {
             boolean loop;
             do {
-                //阻塞，直到线程池里所有任务结束
+                // Block until all tasks in the thread pool end
                 loop = !executorService.awaitTermination(1, TimeUnit.SECONDS);
             } while (loop);
         } catch (InterruptedException e) {
