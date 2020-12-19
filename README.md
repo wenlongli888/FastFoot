@@ -8,7 +8,7 @@ Using java multithreading mechanism and Java 8 functional programming technology
  ```
  * create function to run task<br/>
  ```
-  Function<Integer, List<String>> function = count -> {<br/>
+  Function<Integer, List<String>> function = count -> {
   List<String> list = new ArrayList<>();
   for (int i = 0; i < count; i++) {
       try {
